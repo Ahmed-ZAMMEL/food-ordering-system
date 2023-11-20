@@ -6,7 +6,7 @@
 
     <parent>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+        <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.1.5</version>
         <!-- Note => relativePath: set empty for external parent projects. Use only for local parent projects. -->
         <relativePath/>
@@ -18,6 +18,14 @@
 
     <!-- NOTE => Packaging: pom vs jar, pom packaging creates a container for submodules with jar packaging. -->
     <packaging>pom</packaging>
+    <modules>
+        <module>order-service</module>
+        <module>order-service/order-domain</module>
+        <module>order-service/order-application</module>
+        <module>order-service/order-dataaccess</module>
+        <module>order-service/order-messaging</module>
+        <module>order-service/order-container</module>
+    </modules>
 
     <properties>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
