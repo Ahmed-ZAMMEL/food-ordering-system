@@ -5,15 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>COM.food.ordering.system</groupId>
-        <artifactId>food-ordering-system</artifactId>
+        <artifactId>order-service</artifactId>
         <version>1.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>order-dataaccess</artifactId>
 
     <properties>
-
     </properties>
+
+    <dependencies>
+        <!-- NOTE => Add order-application-service for the output ports of domain layer. -->
+        <dependency>
+            <groupId>COM.food.ordering.system</groupId>
+            <artifactId>order-application-service</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
