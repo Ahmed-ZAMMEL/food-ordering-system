@@ -18,6 +18,7 @@ public class Money {
      * Since this later is final we should set it on the constructor.
      * */
 
+    public static final Money ZERO = new Money(BigDecimal.ZERO);
     private final BigDecimal amount;
 
     public Money(BigDecimal amount) {

@@ -8,7 +8,7 @@ import com.food.ordering.system.order.service.domain.valueobject.OrderItemId;
 public class OrderItem extends BaseEntity<OrderItemId> {
     private final Product product;
     private final int quantity;
-    private final Money money;
+    private final Money price;
     private final Money subTotal;
     private OrderId orderId;
 
@@ -24,7 +24,7 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         super.setId(builder.orderItemId);
         product = builder.product;
         quantity = builder.quantity;
-        money = builder.money;
+        price = builder.price;
         subTotal = builder.subTotal;
         orderId = builder.orderId;
     }
@@ -39,22 +39,52 @@ public class OrderItem extends BaseEntity<OrderItemId> {
         return quantity;
     }
 
-    public Money getMoney() {
-        return money;
+    public Money getPrice() {
+        return price;
     }
 
     public Money getSubTotal() {
         return subTotal;
     }
 
+
     /*
-    NOTE => Make the builder a static class. Then it will work. If it is non-static, it would require an instance of its owning class - and the point is not to have an instance of it, and even to forbid making instances without the builder.
+     *Actually, we can make this initialize order item method package private in the order item class,
+     * because we will not reach it outside the package. It should only be called from order entity, so we remove
+     * the public access.
+     */
+
+    /**
+     * Initialize order and orderItem ids.
+     *
+     * @param orderId
+     * @param orderItemId
+     */
+    void initializeOrderItem(OrderId orderId, OrderItemId orderItemId) {
+        this.orderId = orderId;
+        super.setId(orderItemId);
+    }
+
+    /**
+     * Check if the price is valid.
+     *
+     * @return ture if the price is valid, false otherwise.
+     */
+    boolean isPriceValid() {
+        return price.isGreaterThanZero() &&
+                price.equals(product.getPrice()) &&
+                price.multiply(quantity).equals(subTotal);
+    }
+
+
+    /*
+     * NOTE => Make the builder a static class. Then it will work. If it is non-static, it would require an instance of its owning class - and the point is not to have an instance of it, and even to forbid making instances without the builder.
      */
     public static final class Builder {
         private OrderItemId orderItemId;
         private Product product;
         private int quantity;
-        private Money money;
+        private Money price;
         private Money subTotal;
         private OrderId orderId;
 
@@ -80,8 +110,8 @@ public class OrderItem extends BaseEntity<OrderItemId> {
             return this;
         }
 
-        public Builder money(Money val) {
-            money = val;
+        public Builder price(Money val) {
+            price = val;
             return this;
         }
 
