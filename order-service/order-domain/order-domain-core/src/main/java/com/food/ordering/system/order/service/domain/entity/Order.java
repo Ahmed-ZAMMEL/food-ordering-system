@@ -113,6 +113,81 @@ public class Order extends AggregateRoot<OrderId> {
         }
     }
 
+    /*
+     * So basically, these methods will help us to create a simple state machine to validate the previous state and apply the next state.
+     * ORDER_STATE: PENDING: --> CANCELLED
+     *                       --> PAID:--> APPROVED
+     *                               --> CANCELLING --> CANCELLED
+     * */
+
+    /**
+     * If the order is in correct state, PENDING state, then set its state to PAID state.
+     */
+    public void pay() {
+        if (orderStatus != OrderStatus.PENDING) {
+            throw new OrderDomainException("Order is not in correct state for pay operation!");
+        }
+        orderStatus = OrderStatus.PAID;
+    }
+
+    /**
+     * If the order is in correct state, PAID state, then set its state to APPROVED state.
+     * After the order service marks the order as PAID, the restaurant service needs to confirms that the order has been paid.
+     */
+    public void approve() {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for approve operation!");
+        }
+        orderStatus = OrderStatus.APPROVED;
+    }
+
+    /*
+     * If the restaurant approval fails, order is still in PAID state. In that case, to create a consistent application, order service need to inform payment service to roll back the operation.
+     * To do so, we need to set the order state as CANCELLING and sent a cancel request to the service. This example will be covered while implementing the SAGA design pattern.
+     */
+
+    /**
+     * If the order is in correct state, PAID state, then set its state to CANCELLING state.
+     *
+     * @param failureMessages this list will be got from payment service. It includes the raisons of approval fail.
+     */
+    public void initCancel(List<String> failureMessages) {
+        if (orderStatus != OrderStatus.PAID) {
+            throw new OrderDomainException("Order is not in correct state for initCancel operation!");
+        }
+        orderStatus = OrderStatus.CANCELLING;
+        updateFailureMessages(failureMessages);
+    }
+
+
+    /**
+     * If the order is in correct state, PENDING or CANCELLING state, then set its state to CANCELLING state.
+     *
+     * @param failureMessages list of cancellation's reasons.
+     */
+    public void cancel(List<String> failureMessages) {
+        //TODO: replace !(orderStatus == OrderStatus.PENDING || orderStatus == OrderStatus.CANCELLING) with the Predicate functional interfaces.
+        if (!(orderStatus == OrderStatus.PENDING || orderStatus == OrderStatus.CANCELLING)) {
+            throw new OrderDomainException("Order is not in correct state for cancel operation!");
+        }
+        orderStatus = OrderStatus.CANCELLED;
+        updateFailureMessages(failureMessages);
+    }
+
+    /**
+     * Check the input validity, not null, and update the failure messages list.
+     *
+     * @param failureMessages list of failures reasons.
+     */
+    private void updateFailureMessages(List<String> failureMessages) {
+        if (this.failureMessages != null && failureMessages != null) {
+            this.failureMessages.addAll(failureMessages.stream().filter(message -> !message.isEmpty()).toList());
+        }
+        if (this.failureMessages == null) {
+            this.failureMessages = failureMessages;
+        }
+    }
+
     public CustomerId getCustomerId() {
         return customerId;
     }
