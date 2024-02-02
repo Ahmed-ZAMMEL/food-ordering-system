@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -72,7 +72,25 @@
         </dependencies>
     </dependencyManagement>
 
-    <dependencies></dependencies>
+    <!-- NOTE:
+            => We want to add logging in the OrderDomainSeviceImpl class and this will be the only place that we will use a library in the domain module but only in the domain service, not in the domain core.
+            => We will add provided lombok and spring starter dependencies in the dependencies section instead of dependencyManagement because we will use these dependencies application wise even in the domain service.
+            => There are two types of dependencies in Maven: direct and transitive. Direct dependencies are the ones that we explicitly include in the project. These can be included using <dependency> tags.
+               On the other hand, direct dependencies require transitive dependencies. Maven automatically includes required transitive dependencies in our project.
+               Dependency scopes can help to limit the transitivity of the dependencies. They also modify the classpath for different build tasks. Maven has six default dependency scopes.
+
+    -->
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <!-- NOTE => maven-compiler-plugin: used to compile source of your project. Default source/target setting is 1.8-->

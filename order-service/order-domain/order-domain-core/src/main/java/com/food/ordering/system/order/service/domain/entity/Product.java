@@ -22,6 +22,17 @@ public class Product extends BaseEntity<ProductId> {
         this.price = price;
     }
 
+    /**
+     * Update product information with information got from a restaurant.
+     *
+     * @param name  product name.
+     * @param price product price.
+     */
+    public void updateWithConfirmedNameAndPrice(String name, Money price) {
+        this.name = name;
+        this.price = price;
+    }
+
     public String getName() {
         return name;
     }
