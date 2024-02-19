@@ -11,15 +11,19 @@ public class Product extends BaseEntity<ProductId> {
     public Product(ProductId productId, String name, Money price) {
         /*
          * We should use the constructor approach, when ywe want to create a new instance of the object, with the values already populated(a ready to use object with value populated).
-         * This way we need not explicitly call the setter methods for each field in the object to populate them.
+         * This way, we need not explicitly call the setter methods for each field in the object to populate them.
          * We set the value using a setter approach, when we want to change the value of a field, after the object has been created.
          * **************************************************************************************************************************
-         * => NOTE: since a value object is immutable we are obliged to use constructor to set fields, such as ID.
+         * => NOTE: since a value object is immutable, we are obliged to use constructor to set fields, such as ID.
          ********** But for entity we can use a setter. It is the case of the ProductId.
          * */
         super.setId(productId);
         this.name = name;
         this.price = price;
+    }
+
+    public Product(ProductId productId) {
+        super.setId(productId);
     }
 
     /**
