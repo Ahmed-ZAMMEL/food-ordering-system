@@ -12,6 +12,7 @@ import com.food.ordering.system.order.service.domain.ports.output.repository.Cus
 import com.food.ordering.system.order.service.domain.ports.output.repository.OrderRepository;
 import com.food.ordering.system.order.service.domain.ports.output.repository.RestaurantRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,17 +34,20 @@ public class OrderCreateCommandHandler {
     private final CustomerRepository customerRepository;
     private final RestaurantRepository restaurantRepository;
     private final OrderDataMapper orderDataMapper;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public OrderCreateCommandHandler(OrderDomainService orderDomainService,
                                      OrderRepository orderRepository,
                                      CustomerRepository customerRepository,
                                      RestaurantRepository restaurantRepository,
-                                     OrderDataMapper orderDataMapper) {
+                                     OrderDataMapper orderDataMapper,
+                                     ApplicationEventPublisher applicationEventPublisher) {
         this.orderDomainService = orderDomainService;
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.restaurantRepository = restaurantRepository;
         this.orderDataMapper = orderDataMapper;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     /**
@@ -61,6 +65,7 @@ public class OrderCreateCommandHandler {
         // to return a response to client, we need to convert the saved order into create order response.
         Order orderResult = saveOrder(order);
         log.info("Order is created with id: {}", orderResult.getId().getValue());
+        applicationEventPublisher.publishEvent(orderCreatedEvent);
         return orderDataMapper.orderToCreateOrderResponse(orderResult);
     }
 
