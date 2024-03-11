@@ -47,7 +47,10 @@ public class OrderCreateCommandHandler {
     }
 
     /**
-     * Here, we will use the input commands object and call the required methods to create an order
+     * Here, we will use the input commands object and call the required methods to create an order.
+     * We will continue with the first approach instead of using the TransactionalEventListener annotation,
+     * as the first approach doesn't have the additional application-published step,
+     * and it simply uses the method calls.
      *
      * @param createOrderCommand order command.
      * @return order response.
