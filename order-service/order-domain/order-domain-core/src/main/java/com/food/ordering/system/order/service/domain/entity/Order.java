@@ -33,7 +33,7 @@ public class Order extends AggregateRoot<OrderId> {
         deliveryAddress = builder.deliveryAddress;
         price = builder.price;
         items = builder.items;
-        trackingId = builder.tranTrackingId;
+        trackingId = builder.trackingId;
         orderStatus = builder.orderStatus;
         failureMessages = builder.failureMessages;
     }
@@ -208,7 +208,7 @@ public class Order extends AggregateRoot<OrderId> {
         return items;
     }
 
-    public TrackingId getTranTrackingId() {
+    public TrackingId getTrackingId() {
         return trackingId;
     }
 
@@ -232,7 +232,7 @@ public class Order extends AggregateRoot<OrderId> {
 
         private Money price;
         private List<OrderItem> items;
-        private TrackingId tranTrackingId;
+        private TrackingId trackingId;
         private OrderStatus orderStatus;
         private List<String> failureMessages;
 
@@ -273,8 +273,8 @@ public class Order extends AggregateRoot<OrderId> {
             return this;
         }
 
-        public Builder tranTrackingId(TrackingId val) {
-            tranTrackingId = val;
+        public Builder trackingId(TrackingId val) {
+            trackingId = val;
             return this;
         }
 
