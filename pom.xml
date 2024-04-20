@@ -31,6 +31,7 @@
 
     <properties>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+        <mockito.version>4.11.0</mockito.version>
     </properties>
 
     <!--
@@ -68,6 +69,12 @@
                 <groupId>com.food.ordering.system</groupId>
                 <artifactId>common-domain</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope> <!-- As it is only required for tests, we add the test scope.-->
             </dependency>
         </dependencies>
     </dependencyManagement>
