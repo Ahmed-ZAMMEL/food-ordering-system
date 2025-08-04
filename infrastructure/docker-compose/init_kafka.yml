@@ -1,0 +1,41 @@
+# The purpose of this container is just to create the topics and then exit.
+# How to run zookeeper container: docker-compose -f common.yml -f zookeeper.yml up
+# How to test the health of a Zookeeper: echo ruok | nc localhost 2181
+#                                        It should return "imok" text if ZooKeeper is healthy.
+# How to run kafka cluster: docker-compose -f common.yml -f kafka_cluster.yml up
+# How to run the init Kafka compose file: docker-compose -f common.yml -f init_kafka.yml up
+# Kafka manager user interface: localhost:9000
+# When we use volume mappings, we should first start ZooKeeper and then start Kafka cluster.
+# Because Kafka cluster checks the health of a ZooKeeper at the startup and fails if it is unhealthy.
+# We will replace Docker compose with CP Helm Charts to run Kafka clusters.
+
+version: '3.7'
+services:
+  init-kafka:
+    image: confluentinc/cp-kafka:${KAFKA_VERSION}
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # block until kafka is reachable
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --list
+
+      echo -e 'Deleting kafka topics'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic payment-request --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic payment-response --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic restaurant-approval-request --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic restaurant-approval-response --delete --if-exists
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --topic customer --delete --if-exists
+
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic payment-request --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic payment-response --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic restaurant-approval-request --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic restaurant-approval-response --replication-factor 3 --partitions 3
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --create --if-not-exists --topic customer --replication-factor 3 --partitions 3
+
+
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka-broker-1:9092 --list
+      "
+    networks:
+      - ${GLOBAL_NETWORK:-kafka}
