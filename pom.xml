@@ -27,11 +27,15 @@
         <module>order-service/order-container</module>
         <module>common</module>
         <module>common/common-domain</module>
+        <module>infrastructure</module>
     </modules>
 
     <properties>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
         <mockito.version>4.11.0</mockito.version>
+        <spring-kafka.version>2.8.2</spring-kafka.version>
+        <kafka-avro-serializer.version>7.0.1</kafka-avro-serializer.version>
+        <avro.version>1.11.0</avro.version>
     </properties>
 
     <!--
@@ -71,6 +75,26 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>kafka-producer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>kafka-consumer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>kafka-module</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.food.ordering.system</groupId>
+                <artifactId>kafka-config-data</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-bom</artifactId>
                 <version>${mockito.version}</version>
@@ -80,7 +104,7 @@
     </dependencyManagement>
 
     <!-- NOTE:
-            => We want to add logging in the OrderDomainSeviceImpl class and this will be the only place that we will use a library in the domain module but only in the domain service, not in the domain core.
+            => We want to add logging in the OrderDomainServiceImpl class and this will be the only place that we will use a library in the domain module but only in the domain service, not in the domain core.
             => We will add provided lombok and spring starter dependencies in the dependencies section instead of dependencyManagement because we will use these dependencies application wise even in the domain service.
             => There are two types of dependencies in Maven: direct and transitive. Direct dependencies are the ones that we explicitly include in the project. These can be included using <dependency> tags.
                On the other hand, direct dependencies require transitive dependencies. Maven automatically includes required transitive dependencies in our project.
